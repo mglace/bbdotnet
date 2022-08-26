@@ -8,7 +8,7 @@ namespace bbdotnet.Persistence
     {
         public BBDotnetDbContext CreateDbContext(string[] args)
         {
-            var connectionString = "Data Source=./bbdotnet.db";
+            var connectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=bbdotnet;Integrated Security=True;MultipleActiveResultSets=True";
 
             return new BBDotnetDbContext(connectionString);
         }

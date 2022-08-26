@@ -13,6 +13,16 @@ namespace bbdotnet.Persistence.Configurations
             builder.Property(t => t.Title)
                 .HasMaxLength(100)
                 .IsRequired();
+
+            builder
+                .HasMany(p => p.Tags)
+                .WithMany(t => t.Topics)
+                .UsingEntity(j => j.ToTable("TopicTags"));
+
+            builder.Property(x => x.Timestamp)
+                .HasColumnName("Timestamp")
+                .HasColumnType("timestamp")
+                .IsRowVersion();
         }
     }
 }

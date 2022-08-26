@@ -17,7 +17,7 @@ namespace bbdotnet.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(_connectionString);
+            optionsBuilder.UseSqlServer(_connectionString);
 
             base.OnConfiguring(optionsBuilder);
         }
@@ -26,8 +26,7 @@ namespace bbdotnet.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new TopicEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new PostEntityConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BBDotnetDbContext).Assembly);
         }
 
         public DbSet<TopicEntity> Topics { get; set; }

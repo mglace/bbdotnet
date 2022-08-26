@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 
-namespace bbdotnet.Application.Topics
+namespace bbdotnet.Application
 {
     public static partial class Errors
     {

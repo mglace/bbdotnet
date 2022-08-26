@@ -2,11 +2,18 @@
 {
     public class PostEntity : IEntity
     {
-        private PostEntity() {  }
+        private PostEntity() { }
 
-        public PostEntity(string body, int topicId = default)
+        public PostEntity(string body, DateTime timestamp) 
+        { 
+            Body = body;
+            DateCreated = timestamp;
+        }
+
+        public PostEntity(string body, DateTime timestamp, int topicId)
         {
             Body = body;
+            DateCreated = timestamp;
 
             TopicId = topicId;
         }
@@ -19,9 +26,22 @@
 
         public DateTime DateCreated { get; private set; }
 
+        public bool IsRemoved { get; private set; }
+
+        public int RemovedBy { get; private set; }
+
+        public DateTime? DateRemoved { get; private set; }
+
         //
         // Navigation Properties
 
-        public TopicEntity? Topic { get; private set; }
+        public TopicEntity Topic { get; set; } = default!;
+
+        public void Remove(int userId)
+        {
+            IsRemoved = true;
+            DateRemoved = DateTime.UtcNow;
+            RemovedBy = userId;
+        }
     }
 }
