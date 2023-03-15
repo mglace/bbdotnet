@@ -8,17 +8,14 @@ internal sealed class CreateTopicCommandValidator : AbstractValidator<CreateTopi
 {
     public CreateTopicCommandValidator(IProfanityService profanityService)
     {
-        // TODO: Check for profanity
-        // TODO: Check non-ascii chars
         RuleFor(x => x.Title)
             .NotEmpty()
             .MaximumLength(Topic.MaxTitleLength)
             .Must(t => t.ContainsOnlyPrintableChars())
             .Must(t => !profanityService.ContainFilth(t))
-                .WithMessage("Watch your filthly mouth");
+                .WithMessage("Topic title cannot contain profanity");
 
         // TODO: Check for quote depth
-        // TODO: Check non-ascii chars
         RuleFor(x => x.Body)
             .NotEmpty()
             .MaximumLength(Post.MaxBodyLength)

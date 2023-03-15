@@ -8,9 +8,9 @@ internal sealed class CreatePostCommandValidator : AbstractValidator<CreatePostC
     public CreatePostCommandValidator()
     {
         // TODO: Check for quote depth
-        // TODO: Check non-ascii chars
         RuleFor(x => x.Body)
             .NotEmpty()
-            .MaximumLength(Post.MaxBodyLength);
+            .MaximumLength(Post.MaxBodyLength)
+            .Must(t => t.ContainsOnlyPrintableChars());
     }
 }
