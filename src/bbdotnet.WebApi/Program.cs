@@ -1,36 +1,55 @@
 using bbdotnet.Application;
+using bbdotnet.Domain;
+using bbdotnet.Infrastructure;
 using bbdotnet.Persistence;
 using bbdotnet.WebApi;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json")
+var sqlConnectionString =
+    Environment.GetEnvironmentVariable("SqlConnectionString") ??
+    throw new ApplicationException("Environment variable SqlConnectionString is not defined.");
+
+var host = new HostBuilder()
+    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureServices(s => 
+    {
+        s.AddApiLayer()
+            .AddApplicationLayer()
+            .AddInfrastructureLayer()
+            .AddPersistenceLayer(sqlConnectionString);
+    })
     .Build();
 
-var builder = WebApplication.CreateBuilder(args);
+InitializeDatabase(host);
 
-// Add services to the container.
+host.Run();
+
+static void InitializeDatabase(IHost host)
 { 
-    builder.Services
-        .AddApiLayer()
-        .AddPersistanceLayer(configuration)
-        .AddApplicationLayer();
-}
+    using var serviceScope = host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
-var app = builder.Build();
-{ 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
+    var context = serviceScope.ServiceProvider.GetRequiredService<BBDotnetDbContext>();
 
-    app.UseHttpsRedirection();
+    //context.Database.EnsureDeleted();
+    //context.Database.EnsureCreated();
 
-    app.UseAuthorization();
+    var tag = new Tag(Guid.NewGuid(), "Phish");
 
-    app.MapControllers();
+    context.Topics.AddRange(
+        Topic.Create(
+            "Hello World",
+            1,
+            new[] { TagId.Create(tag.Id) },
+            DateTime.UtcNow
+        ),
+        Topic.Create(
+            "Next Topic!",
+            1,
+            new[] { TagId.Create(tag.Id) },
+            DateTime.UtcNow
+        )
+    );
 
-    app.Run();
+    context.SaveChangesAsync();
 }

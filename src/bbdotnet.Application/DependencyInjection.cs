@@ -1,15 +1,20 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using bbdotnet.Application.Behaviors.Validation;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
 
-namespace bbdotnet.Application
+namespace bbdotnet.Application;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
-    {
-        public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
-        { 
-            services.AddMediatR(typeof(DependencyInjection).Assembly);
+    public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
+    { 
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(AssemblyReference.Assembly));
 
-            return services;
-        }
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+
+        services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);
+
+        return services;
     }
 }

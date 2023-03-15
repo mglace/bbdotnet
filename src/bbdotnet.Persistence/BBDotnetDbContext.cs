@@ -1,36 +1,24 @@
-﻿using bbdotnet.Persistence.Configurations;
-using bbdotnet.Persistence.Models;
+﻿using bbdotnet.Domain;
 using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
-namespace bbdotnet.Persistence
+namespace bbdotnet.Persistence;
+
+public class BBDotnetDbContext : DbContext
 {
-    public class BBDotnetDbContext : DbContext
+    public BBDotnetDbContext(DbContextOptions options) : base(options)
     {
-        public readonly string _connectionString; 
-
-        public BBDotnetDbContext(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-
-            base.OnConfiguring(optionsBuilder);
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BBDotnetDbContext).Assembly);
-        }
-
-        public DbSet<TopicEntity> Topics { get; set; }
-
-        public DbSet<PostEntity> Posts { get; set; }
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BBDotnetDbContext).Assembly);
+    }
+
+    public DbSet<Topic> Topics { get; set; }
+
+    public DbSet<Post> Posts { get; set; }
+
+    public DbSet<Flag> Flags { get; set; }
 }

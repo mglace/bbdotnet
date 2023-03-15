@@ -1,34 +1,28 @@
-﻿using Mapster;
+﻿using bbdotnet.Application.Abstractions.Interfaces;
+using Mapster;
 using MapsterMapper;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace bbdotnet.WebApi
+namespace bbdotnet.WebApi;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddApiLayer(this IServiceCollection services) 
     {
-        public static IServiceCollection AddApiLayer(this IServiceCollection services) 
-        {
-            //
-            // Mapster config
+        //
+        // Mapster config
 
-            var config = TypeAdapterConfig.GlobalSettings;
+        var config = TypeAdapterConfig.GlobalSettings;
 
-            config.Scan(Assembly.GetExecutingAssembly());
+        config.Scan(
+            Assembly.GetExecutingAssembly(),
+            Application.AssemblyReference.Assembly);
 
-            services.AddSingleton(config);
-            services.AddScoped<IMapper, ServiceMapper>();
+        services.AddSingleton(config);
+        services.AddScoped<IMapper, ServiceMapper>();
+        services.AddScoped<IApplicationContext, FunctionApplicationContext>();
 
-            //
-            // ASP.NET Web API config
-
-            services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
-
-            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-
-            return services;
-        }
+        return services;
     }
 }

@@ -1,7 +1,5 @@
-﻿namespace bbdotnet.Application.Topics.Models
-{
-    public record TopicDetailDTO
-    {
-        public int Id { get; init; }
-    }
-}
+﻿namespace bbdotnet.Application.Topics.Models;
+
+public record TopicDetailDTO(
+    Guid Id,
+    string Title);

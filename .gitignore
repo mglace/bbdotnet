@@ -252,3 +252,6 @@ paket-files/
 imagecache
 *.jfm
 PhantasyTour.Web/buildConfig.json
+*.db
+*.db-shm
+*.db-wal

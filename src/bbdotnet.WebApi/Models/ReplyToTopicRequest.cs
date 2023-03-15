@@ -1,7 +1,6 @@
-﻿namespace bbdotnet.WebApi.Models
+﻿namespace bbdotnet.WebApi.Models;
+
+public record ReplyToTopicRequest
 {
-    public record ReplyToTopicRequest
-    {
-        public string Body { get; init; } = default!;
-    }
+    public string Body { get; init; } = default!;
 }

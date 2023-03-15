@@ -17,43 +17,81 @@ namespace bbdotnet.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("bbdotnet.Persistence.Models.PostEntity", b =>
+            modelBuilder.Entity("bbdotnet.Domain.Flag", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Body")
+                    b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime?>("DateClosed")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TopicId")
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FlaggedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReasonId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TopicId");
+                    b.ToTable("Flags");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Flag");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("bbdotnet.Domain.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateRemoved")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRemoved")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RemovedBy")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Post", (string)null);
                 });
 
-            modelBuilder.Entity("bbdotnet.Persistence.Models.TagEntity", b =>
+            modelBuilder.Entity("bbdotnet.Domain.Tag", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -65,13 +103,10 @@ namespace bbdotnet.Persistence.Migrations
                     b.ToTable("Tag", (string)null);
                 });
 
-            modelBuilder.Entity("bbdotnet.Persistence.Models.TopicEntity", b =>
+            modelBuilder.Entity("bbdotnet.Domain.Topic", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -82,14 +117,26 @@ namespace bbdotnet.Persistence.Migrations
                     b.Property<DateTime?>("DateOfLastPost")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DateRemoved")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRemoved")
+                        .HasColumnType("bit");
+
                     b.Property<int>("PostCount")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Timestamp")
+                    b.Property<int?>("RemovedBy")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp")
-                        .HasColumnName("Timestamp");
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -101,25 +148,75 @@ namespace bbdotnet.Persistence.Migrations
                     b.ToTable("Topic", (string)null);
                 });
 
-            modelBuilder.Entity("TagEntityTopicEntity", b =>
+            modelBuilder.Entity("bbdotnet.Domain.PostFlag", b =>
                 {
-                    b.Property<int>("TagsId")
-                        .HasColumnType("int");
+                    b.HasBaseType("bbdotnet.Domain.Flag");
 
-                    b.Property<int>("TopicsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("TagsId", "TopicsId");
+                    b.HasIndex("PostId");
 
-                    b.HasIndex("TopicsId");
-
-                    b.ToTable("TopicTags", (string)null);
+                    b.HasDiscriminator().HasValue("PostFlag");
                 });
 
-            modelBuilder.Entity("bbdotnet.Persistence.Models.PostEntity", b =>
+            modelBuilder.Entity("bbdotnet.Domain.TopicFlag", b =>
                 {
-                    b.HasOne("bbdotnet.Persistence.Models.TopicEntity", "Topic")
-                        .WithMany("Replies")
+                    b.HasBaseType("bbdotnet.Domain.Flag");
+
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("TopicId");
+
+                    b.HasDiscriminator().HasValue("TopicFlag");
+                });
+
+            modelBuilder.Entity("bbdotnet.Domain.Topic", b =>
+                {
+                    b.OwnsMany("bbdotnet.Domain.TagId", "TagIds", b1 =>
+                        {
+                            b1.Property<Guid>("TopicId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uniqueidentifier")
+                                .HasColumnName("TagId");
+
+                            b1.HasKey("TopicId", "Value");
+
+                            b1.HasIndex("Value");
+
+                            b1.ToTable("TopicTagId", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("TopicId");
+
+                            b1.HasOne("bbdotnet.Domain.Tag", null)
+                                .WithMany()
+                                .HasForeignKey("Value")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
+
+                    b.Navigation("TagIds");
+                });
+
+            modelBuilder.Entity("bbdotnet.Domain.PostFlag", b =>
+                {
+                    b.HasOne("bbdotnet.Domain.Post", "Post")
+                        .WithMany("Flags")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("bbdotnet.Domain.TopicFlag", b =>
+                {
+                    b.HasOne("bbdotnet.Domain.Topic", "Topic")
+                        .WithMany("Flags")
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -127,24 +224,14 @@ namespace bbdotnet.Persistence.Migrations
                     b.Navigation("Topic");
                 });
 
-            modelBuilder.Entity("TagEntityTopicEntity", b =>
+            modelBuilder.Entity("bbdotnet.Domain.Post", b =>
                 {
-                    b.HasOne("bbdotnet.Persistence.Models.TagEntity", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("bbdotnet.Persistence.Models.TopicEntity", null)
-                        .WithMany()
-                        .HasForeignKey("TopicsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Flags");
                 });
 
-            modelBuilder.Entity("bbdotnet.Persistence.Models.TopicEntity", b =>
+            modelBuilder.Entity("bbdotnet.Domain.Topic", b =>
                 {
-                    b.Navigation("Replies");
+                    b.Navigation("Flags");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,17 +1,27 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using bbdotnet.Application.Abstractions;
+using bbdotnet.Application.Abstractions.Repositories;
+using bbdotnet.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace bbdotnet.Persistence
+namespace bbdotnet.Persistence;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
-    {
-        public static IServiceCollection AddPersistanceLayer(this IServiceCollection services, IConfiguration configuration)
-        { 
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+    public static IServiceCollection AddPersistenceLayer(this IServiceCollection services, string connectionString)
+    { 
+        services.AddScoped<ISqlConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
 
-            services.AddScoped(_ => new BBDotnetDbContext(connectionString));
+        services.AddDbContext<BBDotnetDbContext>(builder => 
+        {
+            builder.UseSqlServer(connectionString);
+        });
 
-            return services;
-        }
+        services.AddSingleton<ITopicRepository, TopicRepository>();
+        services.AddSingleton<IPostRepository, PostRepository>();
+        services.AddSingleton<IUnitOfWork, UnitOfWork>();
+
+        return services;
     }
+
 }

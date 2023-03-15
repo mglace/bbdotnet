@@ -1,28 +1,50 @@
-﻿using bbdotnet.Persistence.Models;
+﻿using bbdotnet.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace bbdotnet.Persistence.Configurations
+namespace bbdotnet.Persistence.Configurations;
+
+internal class TopicEntityConfiguration : IEntityTypeConfiguration<Topic>
 {
-    internal class TopicEntityConfiguration : IEntityTypeConfiguration<TopicEntity>
+    public void Configure(EntityTypeBuilder<Topic> builder)
     {
-        public void Configure(EntityTypeBuilder<TopicEntity> builder)
+        builder.ToTable("Topic");
+
+        builder.HasKey(t => t.Id);
+
+        builder.Property(t => t.Id)
+            .ValueGeneratedNever()
+            .HasConversion(
+                id => id.Value,
+                value => TopicId.Create(value));
+
+        builder.Property(t => t.Title)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.Property(t => t.RemovedBy)
+            .HasConversion(
+                id => id == null ? default : id.Value,
+                value => MemberId.Create(value));
+
+        builder.OwnsMany(m => m.TagIds, tid =>
         {
-            builder.ToTable("Topic");
+            tid.ToTable("TopicTagId");
 
-            builder.Property(t => t.Title)
-                .HasMaxLength(100)
-                .IsRequired();
+            tid.Property(d => d.Value)
+                .HasColumnName("TagId")
+                .ValueGeneratedNever();
 
-            builder
-                .HasMany(p => p.Tags)
-                .WithMany(t => t.Topics)
-                .UsingEntity(j => j.ToTable("TopicTags"));
+            tid.WithOwner().HasForeignKey("TopicId");
 
-            builder.Property(x => x.Timestamp)
-                .HasColumnName("Timestamp")
-                .HasColumnType("timestamp")
-                .IsRowVersion();
-        }
+            tid.HasKey("TopicId", "Value");
+
+            tid.HasOne<Tag>()
+                .WithMany()
+                .HasForeignKey(t => t.Value);
+        });
+
+        builder.Property<byte[]>("RowVersion")
+            .IsRowVersion();
     }
 }

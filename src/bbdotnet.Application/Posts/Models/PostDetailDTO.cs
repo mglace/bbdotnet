@@ -1,7 +1,6 @@
-﻿namespace bbdotnet.Application.Posts.Models
+﻿namespace bbdotnet.Application.Posts.Models;
+
+public record PostDetailDTO
 {
-    public record PostDetailDTO
-    {
-        public int Id { get; init; }
-    }
+    public int Id { get; init; }
 }

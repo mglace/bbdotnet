@@ -1,16 +1,15 @@
-﻿using bbdotnet.Persistence.Models;
+﻿using bbdotnet.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace bbdotnet.Persistence.Configurations
-{
-    internal class TagEntityConfiguration : IEntityTypeConfiguration<TagEntity>
-    {
-        public void Configure(EntityTypeBuilder<TagEntity> builder)
-        {
-            builder.ToTable("Tag");
+namespace bbdotnet.Persistence.Configurations;
 
-            builder.Property(p => p.Name).HasMaxLength(50);
-        }
+internal class TagEntityConfiguration : IEntityTypeConfiguration<Tag>
+{
+    public void Configure(EntityTypeBuilder<Tag> builder)
+    {
+        builder.ToTable("Tag");
+
+        builder.Property(p => p.Name).HasMaxLength(50);
     }
 }
