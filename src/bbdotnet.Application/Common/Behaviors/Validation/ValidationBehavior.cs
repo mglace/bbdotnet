@@ -3,7 +3,7 @@ using bbdotnet.Domain.Shared;
 using FluentValidation;
 using MediatR;
 
-namespace bbdotnet.Application.Behaviors.Validation;
+namespace bbdotnet.Application.Common.Behaviors.Validation;
 
 public class ValidationPipelineBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>

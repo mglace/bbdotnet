@@ -1,7 +1,7 @@
 ﻿using bbdotnet.Application.Abstractions;
 using bbdotnet.Domain.Shared;
 
-namespace bbdotnet.Application.Behaviors.Validation;
+namespace bbdotnet.Application.Common.Behaviors.Validation;
 
 public sealed class ValidationResult<TValue> : Result<TValue>, IValidationResult
 {

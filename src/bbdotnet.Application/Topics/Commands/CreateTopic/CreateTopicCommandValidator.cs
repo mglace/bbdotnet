@@ -13,7 +13,7 @@ internal sealed class CreateTopicCommandValidator : AbstractValidator<CreateTopi
             .MaximumLength(Topic.MaxTitleLength)
             .Must(t => t.ContainsOnlyPrintableChars())
             .Must(t => !profanityService.ContainFilth(t))
-                .WithMessage("Topic title cannot contain profanity");
+                .WithMessage("Topic title must not contain profanity");
 
         // TODO: Check for quote depth
         RuleFor(x => x.Body)

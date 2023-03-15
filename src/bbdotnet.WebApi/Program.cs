@@ -1,7 +1,7 @@
 using bbdotnet.Application;
 using bbdotnet.Domain;
 using bbdotnet.Infrastructure;
-using bbdotnet.Persistence;
+using bbdotnet.Infrastructure.Persistence;
 using bbdotnet.WebApi;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,8 +16,7 @@ var host = new HostBuilder()
     {
         s.AddApiLayer()
             .AddApplicationLayer()
-            .AddInfrastructureLayer()
-            .AddPersistenceLayer(sqlConnectionString);
+            .AddInfrastructureLayer(sqlConnectionString);
     })
     .Build();
 

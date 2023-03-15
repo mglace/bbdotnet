@@ -3,7 +3,7 @@ using bbdotnet.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace bbdotnet.Persistence.Repositories;
+namespace bbdotnet.Infrastructure.Persistence.Repositories;
 
 internal class TopicRepository : GenericRepositoryBase<Topic, TopicId>, ITopicRepository
 {

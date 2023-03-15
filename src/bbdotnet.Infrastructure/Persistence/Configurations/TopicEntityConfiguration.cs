@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace bbdotnet.Persistence.Configurations;
+namespace bbdotnet.Infrastructure.Persistence.Configurations;
 
 internal class TopicEntityConfiguration : IEntityTypeConfiguration<Topic>
 {

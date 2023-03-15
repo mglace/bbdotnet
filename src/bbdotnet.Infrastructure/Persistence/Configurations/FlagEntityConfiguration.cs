@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace bbdotnet.Persistence.Configurations;
+namespace bbdotnet.Infrastructure.Persistence.Configurations;
 
 internal class FlagEntityConfiguration : IEntityTypeConfiguration<Flag>
 {
@@ -20,17 +20,3 @@ internal class FlagEntityConfiguration : IEntityTypeConfiguration<Flag>
             .HasValue<PostFlag>('p');
     }
 }
-
-//internal class TopicFlagEntityConfiguration : IEntityTypeConfiguration<TopicFlag>
-//{
-//    public void Configure(EntityTypeBuilder<TopicFlag> builder)
-//    {
-//    }
-//}
-
-//internal class PostFlagEntityConfiguration : IEntityTypeConfiguration<PostFlag>
-//{
-//    public void Configure(EntityTypeBuilder<PostFlag> builder)
-//    {
-//    }
-//}

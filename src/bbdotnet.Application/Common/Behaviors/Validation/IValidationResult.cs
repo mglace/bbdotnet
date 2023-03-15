@@ -1,6 +1,6 @@
 ﻿using bbdotnet.Domain.Shared;
 
-namespace bbdotnet.Application.Behaviors.Validation;
+namespace bbdotnet.Application.Common.Behaviors.Validation;
 
 public interface IValidationResult
 {

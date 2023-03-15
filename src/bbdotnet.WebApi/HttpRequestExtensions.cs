@@ -1,5 +1,5 @@
 ﻿using bbdotnet.Application.Abstractions;
-using bbdotnet.Application.Behaviors.Validation;
+using bbdotnet.Application.Common.Behaviors.Validation;
 using bbdotnet.Domain.Shared;
 using bbdotnet.WebApi.Models;
 using Grpc.Core;

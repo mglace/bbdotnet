@@ -1,7 +1,7 @@
 ﻿using bbdotnet.Application.Abstractions.Repositories;
 using bbdotnet.Domain;
 
-namespace bbdotnet.Persistence.Repositories;
+namespace bbdotnet.Infrastructure.Persistence.Repositories;
 
 internal class PostRepository : GenericRepositoryBase<Post, PostId>, IPostRepository
 {

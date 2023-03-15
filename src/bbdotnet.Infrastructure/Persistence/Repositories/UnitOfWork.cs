@@ -2,7 +2,7 @@
 using bbdotnet.Domain.Primitives;
 using MediatR;
 
-namespace bbdotnet.Persistence.Repositories;
+namespace bbdotnet.Infrastructure.Persistence.Repositories;
 
 internal sealed class UnitOfWork : IUnitOfWork
 {
@@ -22,7 +22,7 @@ internal sealed class UnitOfWork : IUnitOfWork
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task RaiseDomainEvents(CancellationToken cancellationToken = default) 
+    private async Task RaiseDomainEvents(CancellationToken cancellationToken = default)
     {
         var domainEvents = _dbContext.ChangeTracker
             .Entries<IAggregateRoot>()
@@ -37,7 +37,7 @@ internal sealed class UnitOfWork : IUnitOfWork
             })
             .ToArray();
 
-        foreach (var domainEvent in domainEvents) 
+        foreach (var domainEvent in domainEvents)
         {
             await _publisher.Publish(domainEvent, cancellationToken);
         }

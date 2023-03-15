@@ -23,7 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\bbdotnet.Application\bbdotnet.Application.csproj" />
     <ProjectReference Include="..\bbdotnet.Infrastructure\bbdotnet.Infrastructure.csproj" />
-    <ProjectReference Include="..\bbdotnet.Persistence\bbdotnet.Persistence.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

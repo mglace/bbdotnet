@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data.Common;
 
-namespace bbdotnet.Persistence;
+namespace bbdotnet.Infrastructure.Persistence;
 
 internal class SqlConnectionFactory : ISqlConnectionFactory
 {

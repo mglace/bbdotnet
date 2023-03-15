@@ -44,12 +44,13 @@ public class Topic : AggregateRoot<TopicId>
 
     private readonly List<TagId>? _tagIds = null;
 
-    public IReadOnlyCollection<TagId> TagIds => _tagIds.AsReadOnlyOrEmpty();
-
+    public IReadOnlyCollection<TagId> TagIds =>
+        _tagIds?.AsReadOnly() ?? throw new CollectionNotInitializedException(nameof(TagIds));
 
     private readonly List<TopicFlag>? _flags = null;
 
-    public IReadOnlyCollection<TopicFlag> Flags => _flags.AsReadOnlyOrEmpty();
+    public IReadOnlyCollection<TopicFlag> Flags =>
+        _flags?.AsReadOnly() ?? throw new CollectionNotInitializedException(nameof(Flags));
 
     //
     // Domain Logic
@@ -75,7 +76,7 @@ public class Topic : AggregateRoot<TopicId>
 
     public TopicFlag Flag(int reasonId, string comments, MemberId currentUserId)
     {
-        if (_flags is null) throw new CollectionNotLoadedException(nameof(Flags));
+        if (_flags is null) throw new CollectionNotInitializedException(nameof(Flags));
 
         TopicFlag flag = new(Guid.NewGuid(), reasonId, comments, currentUserId);
 
@@ -99,7 +100,7 @@ public class Topic : AggregateRoot<TopicId>
     { 
         if (_tagIds is null)
         { 
-            throw new CollectionNotLoadedException(nameof(TagIds));
+            throw new CollectionNotInitializedException(nameof(TagIds));
         }
 
         foreach (var tagId in tagIds) 

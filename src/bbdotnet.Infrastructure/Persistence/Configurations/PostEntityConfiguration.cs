@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace bbdotnet.Persistence.Configurations;
+namespace bbdotnet.Infrastructure.Persistence.Configurations;
 
 internal class PostEntityConfiguration : IEntityTypeConfiguration<Post>
 {
@@ -10,7 +10,7 @@ internal class PostEntityConfiguration : IEntityTypeConfiguration<Post>
     {
         builder.ToTable("Post");
 
-        builder.HasKey(p  => p.Id);
+        builder.HasKey(p => p.Id);
 
         builder.Property(p => p.Body)
             .HasMaxLength(3000)

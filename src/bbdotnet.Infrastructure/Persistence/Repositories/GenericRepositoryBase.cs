@@ -1,9 +1,10 @@
 ﻿using bbdotnet.Application.Abstractions.Repositories;
 using bbdotnet.Domain.Primitives;
+using bbdotnet.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace bbdotnet.Persistence.Repositories;
+namespace bbdotnet.Infrastructure.Persistence.Repositories;
 
 internal abstract class GenericRepositoryBase<TEntity, TKey> : IGenericRepository<TEntity, TKey>
     where TEntity : AggregateRoot<TKey>

@@ -1,12 +1,12 @@
 ﻿namespace bbdotnet.Domain.Exceptions;
 
 [Serializable]
-public class CollectionNotLoadedException : Exception
+public class CollectionNotInitializedException : Exception
 {
-    public CollectionNotLoadedException(string collectionName) 
+    public CollectionNotInitializedException(string collectionName) 
         : base($"{collectionName} is not loaded.") { }
         
-    protected CollectionNotLoadedException(
+    protected CollectionNotInitializedException(
       System.Runtime.Serialization.SerializationInfo info,
       System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
 }

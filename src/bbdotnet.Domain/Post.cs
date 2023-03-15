@@ -44,7 +44,8 @@ public class Post : AggregateRoot<PostId>
 
     private readonly List<PostFlag>? _flags = null;
 
-    public IReadOnlyCollection<PostFlag>? Flags => _flags.AsReadOnlyOrEmpty();
+    public IReadOnlyCollection<PostFlag> Flags => 
+        _flags?.AsReadOnly() ?? throw new CollectionNotInitializedException(nameof(Flags));
 
     //
     // Domain Logic
@@ -63,7 +64,7 @@ public class Post : AggregateRoot<PostId>
 
     public PostFlag Flag(int reasonId, string comments, MemberId memberId)
     {
-        if (_flags is null) throw new CollectionNotLoadedException(nameof(Flags));
+        if (_flags is null) throw new CollectionNotInitializedException(nameof(Flags));
 
         PostFlag flag = new(
             Guid.NewGuid(),

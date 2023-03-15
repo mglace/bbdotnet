@@ -1,7 +1,7 @@
-﻿using bbdotnet.Application.Behaviors.Validation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
+using bbdotnet.Application.Common.Behaviors.Validation;
 
 namespace bbdotnet.Application;
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
-namespace bbdotnet.Persistence;
+namespace bbdotnet.Infrastructure.Persistence;
 
 public class BBDotnetDbContext : DbContext
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace bbdotnet.Persistence;
+namespace bbdotnet.Infrastructure.Persistence;
 
 internal class BBDotnetDbContextDesignTimeFactory : IDesignTimeDbContextFactory<BBDotnetDbContext>
 {
@@ -9,7 +9,7 @@ internal class BBDotnetDbContextDesignTimeFactory : IDesignTimeDbContextFactory<
     {
         var builder = new DbContextOptionsBuilder<BBDotnetDbContext>();
 
-        builder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=PhantasyGames;Integrated Security=SSPI");
+        builder.UseSqlite("Data Source=bbdotnet.db");
 
         return new BBDotnetDbContext(builder.Options);
     }
