@@ -11,13 +11,25 @@ public class Topic : AggregateRoot<TopicId>
     private Topic() { }
 #pragma warning restore CS8618
 
-    internal Topic(TopicId id, string title, int categoryId, DateTime timestamp) : base(id)
+    internal Topic(TopicId id, string title, string body, int categoryId, MemberId authorId, IEnumerable<TagId> tagIds, DateTime timestamp) : base(id)
     {
         Title = title;
         CategoryId = categoryId;
         DateCreated = timestamp;
 
-        //_replies = new List<Post>();
+        _replies = new List<Post>
+        {
+            Post.Create(id, body, authorId, timestamp)
+        };
+
+        _tagIds = new List<TagId>();
+
+        _tagIds.AddRange(tagIds);
+
+        _flags = new List<TopicFlag>();
+
+        PostCount = 1;
+        DateOfLastPost = timestamp;
     }
 
     public string Title { get; private set; }
@@ -41,6 +53,11 @@ public class Topic : AggregateRoot<TopicId>
 
     //
     // Navigation properties
+
+    private readonly List<Post>? _replies = null;
+
+    public IReadOnlyCollection<Post> Replies =>
+        _replies?.AsReadOnly() ?? throw new CollectionNotInitializedException(nameof(Replies));
 
     private readonly List<TagId>? _tagIds = null;
 
@@ -85,12 +102,15 @@ public class Topic : AggregateRoot<TopicId>
         return flag;
     }
 
-    public static Topic Create(string title, int categoryId, IEnumerable<TagId> tagIds, DateTime timestamp)
+    public static Topic Create(string title, int categoryId, string body, MemberId memberId, IEnumerable<TagId> tagIds, DateTime timestamp)
     {
         var topic = new Topic(
             TopicId.CreateUnique(),
             title,
+            body,
             categoryId,
+            memberId,
+            tagIds,
             timestamp);
 
         return topic;

@@ -10,7 +10,6 @@ namespace bbdotnet.Application.Topics.Commands;
 public class CreateTopicCommandHandler : ICommandHandler<CreateTopicCommand, TopicDetailDTO>
 {
     private readonly ITopicRepository _topicRepository;
-    private readonly IPostRepository _postRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IApplicationContext _appContext;
     private readonly IMapper _mapper;
@@ -19,13 +18,11 @@ public class CreateTopicCommandHandler : ICommandHandler<CreateTopicCommand, Top
         IApplicationContext appContext,
         IMapper mapper, 
         ITopicRepository topicRepository,
-        IPostRepository postRepository,
         IUnitOfWork unitOfWork)
     {
         _appContext = appContext;
         _mapper = mapper;
         _topicRepository = topicRepository;
-        _postRepository = postRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -33,19 +30,17 @@ public class CreateTopicCommandHandler : ICommandHandler<CreateTopicCommand, Top
     {
         var timestamp = DateTime.UtcNow;
 
+        var authorId = MemberId.Create(_appContext.UserId);
+
         var topic = Topic.Create(
             request.Title,
             request.CategoryId,
+            request.Body,
+            authorId,
             request.TagIds,
             timestamp);
     
         await _topicRepository.AddAsync(topic, cancellationToken);
-
-        var authorId = MemberId.Create(_appContext.UserId);
-
-        var post = Post.Create(topic.Id, request.Body, authorId, timestamp);
-
-        await _postRepository.AddAsync(post, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

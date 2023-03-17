@@ -39,12 +39,16 @@ static void InitializeDatabase(IHost host)
         Topic.Create(
             "Hello World",
             1,
+            "Let the discussion begin!",
+            MemberId.Create(Guid.NewGuid()),
             new[] { TagId.Create(tag.Id) },
             DateTime.UtcNow
         ),
         Topic.Create(
             "Next Topic!",
             1,
+            "Let the discussion begin!",
+            MemberId.Create(Guid.NewGuid()),
             new[] { TagId.Create(tag.Id) },
             DateTime.UtcNow
         )
